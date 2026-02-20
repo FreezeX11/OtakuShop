@@ -10,6 +10,7 @@ public interface ISubCategoryService {
     void updateSubCategory(Long id, SubCategoryRequest subCategoryRequest);
     void enableSubCategory(Long id);
     void disableSubCategory(Long id);
+    void deleteSubCategory(Long id);
     SubCategoryResponse getSubCategory(Long id);
     List<SubCategoryResponse> getSubCategories();
 }

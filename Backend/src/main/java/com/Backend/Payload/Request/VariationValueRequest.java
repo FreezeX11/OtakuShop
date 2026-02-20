@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class VariationValueRequest {
     @NotBlank(message = "Variation name can't be null")
-    @Size(min = 2, max = 15, message = "Variation name must be between 2 and 15 characters")
+    @Size(min = 1, max = 15, message = "Variation name must be between 2 and 15 characters")
     private String name;
 
     @NotNull

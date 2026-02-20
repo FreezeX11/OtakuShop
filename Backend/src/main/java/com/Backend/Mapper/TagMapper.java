@@ -3,9 +3,11 @@ package com.Backend.Mapper;
 import com.Backend.Entity.Tag;
 import com.Backend.Payload.Request.TagRequest;
 import com.Backend.Payload.Response.TagResponse;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class TagMapper {
 
     public Tag toTag(TagRequest tagRequest) {

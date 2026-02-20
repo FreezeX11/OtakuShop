@@ -31,8 +31,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+            logger.info("Token: {}", jwt);
+
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String email = jwtUtils.getEmailFromJwtToken(jwt);
+
+                logger.info("JWT valid? {}", jwtUtils.validateJwtToken(jwt));
+                logger.info("Email extracted: {}", jwtUtils.getEmailFromJwtToken(jwt));
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -54,8 +59,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
+        logger.info("Auth header: {}", headerAuth);
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
         }
 

@@ -33,6 +33,9 @@ public class TagService implements ITagService {
         Tag existingTag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This tag doesn't exist"));
 
+        if (tagRepository.findByNameIgnoreCase(tagRequest.getName().trim()).isPresent())
+            throw new ResourceAlreadyExistException("This tag already exist");
+
         existingTag.setName(tagRequest.getName());
         tagRepository.save(existingTag);
     }

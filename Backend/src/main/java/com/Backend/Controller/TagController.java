@@ -30,6 +30,12 @@ public class TagController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTag(@PathVariable Long id) {
+        tagService.deleteTag(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getTag(@PathVariable Long id) {
         ApiResponse apiResponse = new ApiResponse(

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class Product {
 
     private String description;
 
-    private String cover;
+    private MultipartFile cover;
 
     private BigDecimal price;
 

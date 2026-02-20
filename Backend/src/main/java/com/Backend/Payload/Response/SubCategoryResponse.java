@@ -12,7 +12,7 @@ public class SubCategoryResponse {
 
     private String name;
 
-    private CategoryResponse categoryResponse;
+    private String categoryName;
 
     private boolean enable;
 }

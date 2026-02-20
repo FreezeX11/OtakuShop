@@ -43,6 +43,12 @@ public class VariationValueController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVariationValue(@PathVariable Long id) {
+        variationValueService.deleteVariationValue(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getVariationValue(@PathVariable Long id) {
         ApiResponse apiResponse = new ApiResponse(

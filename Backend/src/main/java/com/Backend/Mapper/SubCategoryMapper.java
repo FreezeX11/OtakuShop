@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Service
 @AllArgsConstructor
 public class SubCategoryMapper {
-    private final CategoryMapper categoryMapper;
 
     public SubCategory toSubCategory(SubCategoryRequest subCategoryRequest) {
         SubCategory subCategory = new SubCategory();
@@ -28,9 +27,7 @@ public class SubCategoryMapper {
         subCategoryResponse.setId(subCategory.getId());
         subCategoryResponse.setName(subCategory.getName());
         subCategoryResponse.setEnable(subCategory.isEnable());
-        subCategoryResponse.setCategoryResponse(
-                categoryMapper.toCategoryResponse(subCategory.getCategory())
-        );
+        subCategoryResponse.setCategoryName(subCategory.getCategory().getName());
 
         return subCategoryResponse;
     }

@@ -10,6 +10,7 @@ public interface ICategoryService {
     void updateCategory(Long id, CategoryRequest categoryRequest);
     void enableCategory(Long id);
     void disableCategory(Long id);
+    void deleteCategory(Long id);
     CategoryResponse getCategory(Long id);
     List<CategoryResponse> getCategories();
 }

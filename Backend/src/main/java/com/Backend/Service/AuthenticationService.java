@@ -44,7 +44,8 @@ public class AuthenticationService implements IAuthenticationService {
         return new JwtResponse(
                 userDetails.getId(),
                 userDetails.getUsername(),
-                profile
+                profile,
+                jwtToken
         );
     }
 }

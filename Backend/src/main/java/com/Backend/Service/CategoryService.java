@@ -1,7 +1,9 @@
 package com.Backend.Service;
 
 import com.Backend.Entity.Category;
+import com.Backend.Entity.SubCategory;
 import com.Backend.Exception.ResourceAlreadyExistException;
+import com.Backend.Exception.ResourceInUseException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.CategoryMapper;
 import com.Backend.Payload.Request.CategoryRequest;
@@ -32,6 +34,9 @@ public class CategoryService implements ICategoryService {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This category doesn't exist"));
 
+        if (categoryRepository.findByNameIgnoreCase(categoryRequest.getName().trim()).isPresent())
+            throw new ResourceAlreadyExistException("This category already exist");
+
         existingCategory.setName(categoryRequest.getName());
         categoryRepository.save(existingCategory);
     }
@@ -58,6 +63,21 @@ public class CategoryService implements ICategoryService {
 
         existingCategory.setEnable(false);
         categoryRepository.save(existingCategory);
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This category doesn't exist"));
+
+        List<SubCategory> subCategories = existingCategory.getSubCategories();
+
+        for(SubCategory subCategory: subCategories) {
+            if(!subCategory.getProducts().isEmpty())
+                throw new ResourceInUseException("The subcategory: " + subCategory.getName() + "is used by one or more products");
+        }
+
+        categoryRepository.delete(existingCategory);
     }
 
     @Override

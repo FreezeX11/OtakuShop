@@ -42,6 +42,12 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCategory(@PathVariable Long id) {
         ApiResponse apiResponse = new ApiResponse(

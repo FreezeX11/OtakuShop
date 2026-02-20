@@ -4,6 +4,7 @@ import com.Backend.Entity.Category;
 import com.Backend.Entity.SubCategory;
 import com.Backend.Exception.BusinessException;
 import com.Backend.Exception.ResourceAlreadyExistException;
+import com.Backend.Exception.ResourceInUseException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.SubCategoryMapper;
 import com.Backend.Payload.Request.SubCategoryRequest;
@@ -42,6 +43,9 @@ public class SubCategoryService implements ISubCategoryService {
         SubCategory existingSubCategory = subCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This subcategory doesn't exist"));
 
+        if (subCategoryRepository.findByNameIgnoreCase(subCategoryRequest.getName().trim()).isPresent())
+            throw new ResourceAlreadyExistException("This subcategory already exist");
+
         existingSubCategory.setName(subCategoryRequest.getName());
         subCategoryRepository.save(existingSubCategory);
     }
@@ -74,6 +78,17 @@ public class SubCategoryService implements ISubCategoryService {
 
         existingSubCategory.setEnable(false);
         subCategoryRepository.save(existingSubCategory);
+    }
+
+    @Override
+    public void deleteSubCategory(Long id) {
+        SubCategory existingSubCategory = subCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This subcategory doesn't exist"));
+
+        if(!existingSubCategory.getProducts().isEmpty())
+            throw new ResourceInUseException("This subcategory is used by one or more products");
+
+        subCategoryRepository.delete(existingSubCategory);
     }
 
     @Override

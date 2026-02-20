@@ -5,12 +5,15 @@ import com.Backend.Payload.Request.VariationValueRequest;
 import com.Backend.Payload.Response.VariationValueResponse;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class VariationValueMapper {
 
     public VariationValue toVariationValue(VariationValueRequest variationValueRequest) {
         VariationValue variationValue = new VariationValue();
         variationValue.setName(variationValueRequest.getName());
+        variationValue.setCreatedDate(LocalDateTime.now());
 
         return variationValue;
     }

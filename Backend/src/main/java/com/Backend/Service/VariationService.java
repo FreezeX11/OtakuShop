@@ -35,6 +35,9 @@ public class VariationService implements IVariationService {
         Variation existingVariation = variationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This variation doesn't exist"));
 
+        if (variationRepository.findByNameIgnoreCase(variationRequest.getName().trim()).isPresent())
+            throw new ResourceAlreadyExistException("This variation already exist");
+
         existingVariation.setName(variationRequest.getName());
         variationRepository.save(existingVariation);
     }
@@ -72,6 +75,26 @@ public class VariationService implements IVariationService {
 
         existingVariation.setEnable(false);
         variationRepository.save(existingVariation);
+    }
+
+    @Override
+    public void deleteVariation(Long id) {
+        Variation existingVariation = variationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This variation doesn't exist"));
+
+        List<VariationValue> variationValues = existingVariation.getVariationValues();
+
+        for(VariationValue variationValue : variationValues) {
+            boolean usedByActiveSku = variationValue.getProductSkus().stream()
+                    .anyMatch(ProductSku::isEnable);
+
+            if(usedByActiveSku)
+                throw new ResourceInUseException(
+                        "The variation value : " + variationValue + " is used by one or many products"
+                );
+        }
+
+        variationRepository.delete(existingVariation);
     }
 
     @Override

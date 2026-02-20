@@ -14,4 +14,6 @@ public class JwtResponse {
     private String email;
 
     private String profile;
+
+    private String jwt;
 }

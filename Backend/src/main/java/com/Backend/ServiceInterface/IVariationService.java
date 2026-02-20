@@ -10,6 +10,7 @@ public interface IVariationService {
     void updateVariation(Long id, VariationRequest variationRequest);
     void enableVariation(Long id);
     void disableVariation(Long id);
+    void deleteVariation(Long id);
     VariationResponse getVariation(Long id);
     List<VariationResponse> getVariations();
 }

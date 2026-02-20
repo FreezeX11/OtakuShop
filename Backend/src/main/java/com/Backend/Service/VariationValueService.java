@@ -4,6 +4,7 @@ import com.Backend.Entity.Variation;
 import com.Backend.Entity.VariationValue;
 import com.Backend.Exception.BusinessException;
 import com.Backend.Exception.ResourceAlreadyExistException;
+import com.Backend.Exception.ResourceInUseException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.VariationValueMapper;
 import com.Backend.Payload.Request.VariationValueRequest;
@@ -46,6 +47,9 @@ public class VariationValueService implements IVariationValueService {
                         "This variation value doesn't exist")
                 );
 
+        if (variationValueRepository.findByNameIgnoreCase(variationValueRequest.getName().trim()).isPresent())
+            throw new ResourceAlreadyExistException("This variation value already exist");
+
         existingVariationValue.setName(variationValueRequest.getName());
         variationValueRepository.save(existingVariationValue);
     }
@@ -83,6 +87,19 @@ public class VariationValueService implements IVariationValueService {
 
         existingVariationValue.setEnable(false);
         variationValueRepository.save(existingVariationValue);
+    }
+
+    @Override
+    public void deleteVariationValue(Long id) {
+        VariationValue existingVariationValue = variationValueRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "This variation value doesn't exist")
+                );
+
+        if(!existingVariationValue.getProductSkus().isEmpty())
+            throw new ResourceInUseException("This variation value is used by one or more products");
+
+        variationValueRepository.delete(existingVariationValue);
     }
 
     @Override

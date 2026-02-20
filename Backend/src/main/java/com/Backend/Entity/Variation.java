@@ -26,6 +26,7 @@ public class Variation {
 
     @OneToMany(
             fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
             mappedBy = "variation"
     )
     private List<VariationValue> variationValues = new ArrayList<>();

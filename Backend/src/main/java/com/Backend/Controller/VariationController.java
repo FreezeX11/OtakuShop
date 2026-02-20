@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,6 +40,12 @@ public class VariationController {
     public ResponseEntity<Void> enableVariation(@PathVariable Long id) {
         variationService.enableVariation(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVariation(@PathVariable Long id) {
+        variationService.deleteVariation(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{id}")

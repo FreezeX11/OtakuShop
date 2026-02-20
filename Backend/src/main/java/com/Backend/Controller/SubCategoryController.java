@@ -42,6 +42,12 @@ public class SubCategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSubCategory(@PathVariable Long id) {
+        subCategoryService.deleteSubCategory(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getSubCategory(@PathVariable Long id) {
         ApiResponse apiResponse = new ApiResponse(
