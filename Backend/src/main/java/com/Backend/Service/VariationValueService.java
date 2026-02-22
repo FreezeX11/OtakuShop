@@ -83,7 +83,6 @@ public class VariationValueService implements IVariationValueService {
 
         Variation variation = existingVariationValue.getVariation();
 
-
         if(!variation.isEnable()) {
             throw new BusinessException("Variation is disabled, cannot update variation value");
         }
