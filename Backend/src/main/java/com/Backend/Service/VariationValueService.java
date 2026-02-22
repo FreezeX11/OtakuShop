@@ -67,6 +67,9 @@ public class VariationValueService implements IVariationValueService {
             throw new BusinessException("Variation is disabled, cannot update variation value");
         }
 
+        existingVariationValue.getProductSkus()
+                        .forEach(productSku -> productSku.setEnable(true));
+
         existingVariationValue.setEnable(true);
         variationValueRepository.save(existingVariationValue);
     }
@@ -84,6 +87,9 @@ public class VariationValueService implements IVariationValueService {
         if(!variation.isEnable()) {
             throw new BusinessException("Variation is disabled, cannot update variation value");
         }
+
+        existingVariationValue.getProductSkus()
+                .forEach(productSku -> productSku.setEnable(false));
 
         existingVariationValue.setEnable(false);
         variationValueRepository.save(existingVariationValue);

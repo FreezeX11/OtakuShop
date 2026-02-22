@@ -47,8 +47,6 @@ public class Product {
     )
     private List<Tag> tags = new ArrayList<>();
 
-    private boolean enable = true;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
