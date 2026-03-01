@@ -32,7 +32,8 @@ public class ProductSku {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSku")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "product_sku_id")
     private List<Image> images = new ArrayList<>();
 
     @ManyToMany

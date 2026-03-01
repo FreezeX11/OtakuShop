@@ -28,7 +28,7 @@ public class Product {
 
     private String description;
 
-    private MultipartFile cover;
+    private String cover;
 
     private BigDecimal price;
 

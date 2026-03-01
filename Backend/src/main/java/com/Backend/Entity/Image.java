@@ -22,10 +22,6 @@ public class Image {
 
     private String url;
 
-    @ManyToOne
-    @JoinColumn(name = "product_sku_id")
-    private ProductSku productSku;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
