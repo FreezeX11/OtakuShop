@@ -21,6 +21,8 @@ public class ProductResponse {
 
     private BigDecimal price;
 
+    private boolean enable;
+
     private SubCategoryResponse subCategoryResponse;
 
     private List<TagResponse> tagResponses;

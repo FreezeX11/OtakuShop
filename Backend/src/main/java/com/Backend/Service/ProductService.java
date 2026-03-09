@@ -1,28 +1,30 @@
 package com.Backend.Service;
 
 import com.Backend.Entity.Product;
+import com.Backend.Entity.ProductSku;
 import com.Backend.Entity.SubCategory;
 import com.Backend.Entity.Tag;
 import com.Backend.Exception.ResourceAlreadyExistException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.ProductMapper;
 import com.Backend.Payload.Request.ProductRequest;
-import com.Backend.Payload.Request.ProductSkuRequest;
+import com.Backend.Payload.Response.ProductResponse;
 import com.Backend.Repository.ProductRepository;
 import com.Backend.Repository.SubCategoryRepository;
 import com.Backend.Repository.TagRepository;
 import com.Backend.ServiceInterface.IProductService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
@@ -50,19 +52,83 @@ public class ProductService implements IProductService {
         mappedProduct.setCover(coverPath);
         mappedProduct.setTags(tags);
 
-        Product product = productRepository.save(mappedProduct);
-
         productRequest.getProductSkuRequests()
-                .forEach(productSkuRequest -> productSkuService.addProductSku(productSkuRequest, product));
+                .forEach(productSkuRequest -> {
+                    ProductSku productSku = productSkuService.addProductSku(productSkuRequest);
+                    productSku.setProduct(mappedProduct);
+                    mappedProduct.getProductSkus().add(productSku);
+                });
+
+        productRepository.save(mappedProduct);
     }
 
     @Override
-    public void updateProduct(Long id, ProductRequest productRequest) {
+    public void updateProduct(Long id, ProductRequest productRequest) throws IOException {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
 
+        SubCategory existingSubCategory = subCategoryRepository.findById(productRequest.getSubCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("This subcategory doesn't exist"));
+
+        List<Tag> tags = tagRepository.findAllById(productRequest.getTagsIds());
+
+        if(productRepository.findByNameIgnoreCase(productRequest.getName().trim()).isPresent()
+                && !Objects.equals(existingProduct.getName(), productRequest.getName())) {
+            throw new ResourceAlreadyExistException("This product already exist");
+        }
+
+        if(productRequest.getCover() != null) {
+            String coverPath = fileService.uploadFile(productRequest.getCover(), imageUploadPath);
+            existingProduct.setCover(coverPath);
+        }
+
+        existingProduct.setName(productRequest.getName());
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setPrice(productRequest.getPrice());
+        existingProduct.setSubCategory(existingSubCategory);
+        existingProduct.setTags(tags);
+
+        productRepository.save(existingProduct);
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void enableProduct(Long id) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
 
+        existingProduct.getProductSkus()
+                .forEach(productSku -> productSku.setEnable(true));
+
+        existingProduct.setEnable(true);
+
+        productRepository.save(existingProduct);
+    }
+
+    @Override
+    public void disableProduct(Long id) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
+
+        existingProduct.getProductSkus()
+                .forEach(productSku -> productSku.setEnable(false));
+
+        existingProduct.setEnable(false);
+
+        productRepository.save(existingProduct);
+    }
+
+    @Override
+    public ProductResponse getProduct(Long id) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
+
+        return productMapper.toProductResponse(existingProduct);
+    }
+
+    @Override
+    public List<ProductResponse> getProducts() {
+        return productRepository.findAll().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
     }
 }

@@ -15,5 +15,7 @@ public class ProductSkuResponse {
 
     private List<VariationValueResponse> variationValueResponses;
 
-    private List<Image> images;
+    private List<ImageResponse> imageResponses;
+
+    private boolean enable;
 }

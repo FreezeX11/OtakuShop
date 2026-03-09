@@ -32,7 +32,11 @@ public class ProductSku {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true
+    )
     @JoinColumn(name = "product_sku_id")
     private List<Image> images = new ArrayList<>();
 
@@ -45,7 +49,7 @@ public class ProductSku {
     private List<VariationValue> variationValues = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSku")
-    private List<CardItem> cardItems = new ArrayList<>();
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSku")
     private List<OrderItem> orderItems = new ArrayList<>();

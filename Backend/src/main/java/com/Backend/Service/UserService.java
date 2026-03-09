@@ -32,7 +32,7 @@ public class UserService implements IUserService {
                 UserProfile.valueOf(signupRequest.getProfile())
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(signupRequest.getProfile() + "not found")
+                        new RuntimeException(signupRequest.getProfile() + " not found")
                 );
 
         userRepository.save(userMapper.toUser(signupRequest, profile));

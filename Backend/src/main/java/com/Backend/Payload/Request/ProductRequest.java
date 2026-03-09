@@ -2,6 +2,7 @@ package com.Backend.Payload.Request;
 
 import com.Backend.Entity.Tag;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,9 +30,13 @@ public class ProductRequest {
     @NotNull(message = "The price can't be null")
     private BigDecimal price;
 
+    @NotNull(message = "SubCategory Id can't be null")
     private Long subCategoryId;
 
-    private List<ProductSkuRequest> productSkuRequests;
+    @NotEmpty(message = "ProductSku list can't be empty")
+    @Size(min = 1, message = "ProductSkuRequest should have at least 1 element")
+    private List<ProductSkuRequest> productSkuRequests = new ArrayList<>();
 
-    private List<Long> tagsIds;
+    @NotNull(message = "Tag list can't be null")
+    private List<Long> tagsIds = new ArrayList<>();
 }

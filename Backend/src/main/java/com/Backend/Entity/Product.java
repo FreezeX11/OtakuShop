@@ -36,7 +36,11 @@ public class Product {
     @JoinColumn(name = "subCategory_id")
     private SubCategory subCategory;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "product",
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE }
+    )
     private List<ProductSku> productSkus = new ArrayList<>();
 
     @ManyToMany
@@ -46,6 +50,8 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
+
+    private boolean enable = true;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

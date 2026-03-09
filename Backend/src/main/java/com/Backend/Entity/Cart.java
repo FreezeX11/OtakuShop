@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "cards")
+@Table(name = "carts")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Card {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +29,8 @@ public class Card {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "card")
-    private List<CardItem> cardItems = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
