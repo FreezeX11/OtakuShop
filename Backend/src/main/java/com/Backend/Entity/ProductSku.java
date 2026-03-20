@@ -48,7 +48,11 @@ public class ProductSku {
     )
     private List<VariationValue> variationValues = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSku")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "productSku",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     private List<CartItem> cartItems = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productSku")

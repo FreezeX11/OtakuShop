@@ -13,6 +13,8 @@ import java.util.List;
 public class ProductSkuResponse {
     private Long id;
 
+    private String sku;
+
     private List<VariationValueResponse> variationValueResponses;
 
     private List<ImageResponse> imageResponses;

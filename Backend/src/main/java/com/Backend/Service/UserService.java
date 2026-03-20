@@ -20,6 +20,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final UserMapper userMapper;
+    private final CartService cartService;
 
     @Override
     public void registerUser(SignupRequest signupRequest) {
@@ -35,7 +36,10 @@ public class UserService implements IUserService {
                         new RuntimeException(signupRequest.getProfile() + " not found")
                 );
 
-        userRepository.save(userMapper.toUser(signupRequest, profile));
+        User user = userMapper.toUser(signupRequest, profile);
+        cartService.createCart(user);
+
+        userRepository.save(user);
     }
 
     @Override

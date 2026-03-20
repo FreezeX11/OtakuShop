@@ -29,7 +29,11 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            mappedBy = "cart"
+    )
     private List<CartItem> cartItems = new ArrayList<>();
 
     @CreatedDate

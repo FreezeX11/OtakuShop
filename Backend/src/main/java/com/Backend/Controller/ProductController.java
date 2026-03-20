@@ -27,10 +27,13 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(
+            value = "/{id}",
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }
+    )
     public ResponseEntity<ApiResponse> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductRequest productRequest
+            @Valid @ModelAttribute  ProductRequest productRequest
     ) throws IOException {
         productService.updateProduct(id, productRequest);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -102,7 +105,7 @@ public class ProductController {
 
     @PutMapping("/{id}/productSkus/{productSkuId}/enable")
     public ResponseEntity<Void> enableProductSku(@PathVariable Long id, @PathVariable Long productSkuId) {
-        productSkuService.enableProductSKu(id, productSkuId);
+        productSkuService.enableProductSku(id, productSkuId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

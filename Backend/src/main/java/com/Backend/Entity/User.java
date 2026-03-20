@@ -34,6 +34,9 @@ public class User {
     @JoinColumn(name = "user_profile")
     private Profile userProfile;
 
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;

@@ -129,20 +129,28 @@ public class ProductSkuService implements IProductSkuService {
     }
 
     @Override
-    public void enableProductSKu(Long productId, Long productSkuId) {
-        ProductSku productSku = productSkuRepository.findById(productSkuId)
+    public void enableProductSku(Long productId, Long productSkuId) {
+        ProductSku existingProductSku = productSkuRepository.findById(productSkuId)
                 .orElseThrow(() -> new ResourceNotFoundException("This variant doesn't exist"));
 
-        productSku.setEnable(true);
-        productSkuRepository.save(productSku);
+        if(!existingProductSku.getProduct().getId().equals(productId)){
+            throw new IllegalArgumentException("SKU does not belong to this product");
+        }
+
+        existingProductSku.setEnable(true);
+        productSkuRepository.save(existingProductSku);
     }
 
     @Override
     public void disableProductSku(Long productId, Long productSkuId) {
-        ProductSku productSku = productSkuRepository.findById(productSkuId)
+        ProductSku existingProductSku = productSkuRepository.findById(productSkuId)
                 .orElseThrow(() -> new ResourceNotFoundException("This variant doesn't exist"));
 
-        productSku.setEnable(false);
-        productSkuRepository.save(productSku);
+        if(!existingProductSku.getProduct().getId().equals(productId)){
+            throw new IllegalArgumentException("SKU does not belong to this product");
+        }
+
+        existingProductSku.setEnable(false);
+        productSkuRepository.save(existingProductSku);
     }
 }

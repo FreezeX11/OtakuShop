@@ -28,6 +28,7 @@ public class ProductSkuMapper {
         ProductSkuResponse productSkuResponse = new ProductSkuResponse();
 
         productSkuResponse.setId(productSku.getId());
+        productSkuResponse.setSku(productSku.getSku());
         productSkuResponse.setEnable(productSku.isEnable());
 
         productSkuResponse.setVariationValueResponses(

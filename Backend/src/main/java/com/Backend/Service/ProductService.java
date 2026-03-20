@@ -97,7 +97,7 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
 
         existingProduct.getProductSkus()
-                .forEach(productSku -> productSku.setEnable(true));
+                .forEach(productSku -> productSkuService.enableProductSku(id, productSku.getId()));
 
         existingProduct.setEnable(true);
 
@@ -110,7 +110,7 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("This product doesn't exist"));
 
         existingProduct.getProductSkus()
-                .forEach(productSku -> productSku.setEnable(false));
+                .forEach(productSku -> productSkuService.disableProductSku(id, productSku.getId()));
 
         existingProduct.setEnable(false);
 
