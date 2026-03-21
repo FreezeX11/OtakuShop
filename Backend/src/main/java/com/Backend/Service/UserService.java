@@ -36,10 +36,8 @@ public class UserService implements IUserService {
                         new RuntimeException(signupRequest.getProfile() + " not found")
                 );
 
-        User user = userMapper.toUser(signupRequest, profile);
+        User user = userRepository.save(userMapper.toUser(signupRequest, profile));
         cartService.createCart(user);
-
-        userRepository.save(user);
     }
 
     @Override

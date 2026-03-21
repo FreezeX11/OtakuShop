@@ -123,8 +123,11 @@ public class ProductSkuService implements IProductSkuService {
                 });
 
         existingProductSku.setQuantity(productSkuRequest.getQuantity());
-        existingProductSku.setImages(images);
         existingProductSku.setOutOfStock(productSkuRequest.getQuantity() == 0);
+
+        existingProductSku.getImages().clear();
+        existingProductSku.getImages().addAll(images);
+
         productSkuRepository.save(existingProductSku);
     }
 

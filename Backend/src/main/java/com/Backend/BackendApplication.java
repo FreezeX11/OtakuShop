@@ -22,15 +22,15 @@ public class BackendApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		for (UserProfile userProfileEnum : UserProfile.values()) {
-			profileRepository.save(new Profile(userProfileEnum));
-		}
-
-		SignupRequest signupRequest = new SignupRequest();
-		signupRequest.setEmail("diam@gmail.com");
-		signupRequest.setProfile("ADMIN");
-		signupRequest.setPassword("strongPassword123");
-
-		userService.registerUser(signupRequest);
+//		for (UserProfile userProfileEnum : UserProfile.values()) {
+//			profileRepository.save(new Profile(userProfileEnum));
+//		}
+//
+//		SignupRequest signupRequest = new SignupRequest();
+//		signupRequest.setEmail("diam@gmail.com");
+//		signupRequest.setProfile("ADMIN");
+//		signupRequest.setPassword("strongPassword123");
+//
+//		userService.registerUser(signupRequest);
 	}
 }

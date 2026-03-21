@@ -87,11 +87,14 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/productSkus/{productSkuId}")
+    @PutMapping(
+            value = "/{id}/productSkus/{productSkuId}",
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }
+    )
     public ResponseEntity<ApiResponse> updateProductSku(
             @PathVariable Long id,
             @PathVariable Long productSkuId,
-            @Valid @RequestBody ProductSkuRequest productSkuRequest)
+            @Valid @ModelAttribute ProductSkuRequest productSkuRequest)
     {
         productSkuService.updateProductSku(id, productSkuId, productSkuRequest);
         return new ResponseEntity<>(HttpStatus.OK);

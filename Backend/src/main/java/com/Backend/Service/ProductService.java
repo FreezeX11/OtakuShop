@@ -4,12 +4,14 @@ import com.Backend.Entity.Product;
 import com.Backend.Entity.ProductSku;
 import com.Backend.Entity.SubCategory;
 import com.Backend.Entity.Tag;
+import com.Backend.Exception.BusinessException;
 import com.Backend.Exception.ResourceAlreadyExistException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.ProductMapper;
 import com.Backend.Payload.Request.ProductRequest;
 import com.Backend.Payload.Response.ProductResponse;
 import com.Backend.Repository.ProductRepository;
+import com.Backend.Repository.ProductSkuRepository;
 import com.Backend.Repository.SubCategoryRepository;
 import com.Backend.Repository.TagRepository;
 import com.Backend.ServiceInterface.IProductService;
@@ -27,6 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
+    private final ProductSkuRepository productSkuRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final TagRepository tagRepository;
     private final ProductMapper productMapper;
@@ -75,6 +78,16 @@ public class ProductService implements IProductService {
         if(productRepository.findByNameIgnoreCase(productRequest.getName().trim()).isPresent()
                 && !Objects.equals(existingProduct.getName(), productRequest.getName())) {
             throw new ResourceAlreadyExistException("This product already exist");
+        }
+
+        if(existingProduct.getProductSkus().size() == 1
+                && existingProduct.getProductSkus().getFirst().getVariationValues().isEmpty()) {
+
+            ProductSku existingProductSku = existingProduct.getProductSkus().getFirst();
+            int quantity = productRequest.getProductSkuRequests().getFirst().getQuantity();
+
+            existingProductSku.setQuantity(quantity);
+            productSkuRepository.save(existingProductSku);
         }
 
         if(productRequest.getCover() != null) {

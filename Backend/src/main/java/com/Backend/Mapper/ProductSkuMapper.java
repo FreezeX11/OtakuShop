@@ -29,6 +29,8 @@ public class ProductSkuMapper {
 
         productSkuResponse.setId(productSku.getId());
         productSkuResponse.setSku(productSku.getSku());
+        productSkuResponse.setQuantity(productSku.getQuantity());
+        productSkuResponse.setOutOfStock(productSku.isOutOfStock());
         productSkuResponse.setEnable(productSku.isEnable());
 
         productSkuResponse.setVariationValueResponses(

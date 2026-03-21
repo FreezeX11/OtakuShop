@@ -15,9 +15,13 @@ public class ProductSkuResponse {
 
     private String sku;
 
+    private int quantity;
+
     private List<VariationValueResponse> variationValueResponses;
 
     private List<ImageResponse> imageResponses;
+
+    private boolean outOfStock;
 
     private boolean enable;
 }
