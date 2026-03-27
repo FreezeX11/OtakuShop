@@ -78,10 +78,13 @@ public class ProductController {
     }
 
     //ProductSku
-    @PostMapping("/{id}/productSkus")
+    @PostMapping(
+            value = "/{id}/productSkus",
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }
+    )
     public ResponseEntity<Void> addProductSku(
             @PathVariable Long id,
-            @Valid @RequestBody ProductSkuRequest productSkuRequest
+            @Valid @ModelAttribute ProductSkuRequest productSkuRequest
     ) {
         productSkuService.addProductSku(id, productSkuRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -94,8 +97,8 @@ public class ProductController {
     public ResponseEntity<ApiResponse> updateProductSku(
             @PathVariable Long id,
             @PathVariable Long productSkuId,
-            @Valid @ModelAttribute ProductSkuRequest productSkuRequest)
-    {
+            @Valid @ModelAttribute ProductSkuRequest productSkuRequest
+    ) throws IOException {
         productSkuService.updateProductSku(id, productSkuId, productSkuRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }

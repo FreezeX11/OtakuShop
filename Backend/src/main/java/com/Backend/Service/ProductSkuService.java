@@ -14,6 +14,7 @@ import com.Backend.ServiceInterface.IProductSkuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -57,6 +58,7 @@ public class ProductSkuService implements IProductSkuService {
         return productSku;
     }
 
+    @Transactional
     @Override
     public void addProductSku(Long productId, ProductSkuRequest productSkuRequest) {
         Product existingProduct = productRepository.findById(productId)
@@ -64,9 +66,9 @@ public class ProductSkuService implements IProductSkuService {
 
         if(existingProduct.getProductSkus().size() == 1
                 && existingProduct.getProductSkus().getFirst().getVariationValues().isEmpty()) {
-            Long productSkuId = existingProduct.getProductSkus().getFirst().getId();
+            ProductSku existingProductSku = existingProduct.getProductSkus().getFirst();
 
-            productSkuRepository.deleteById(productSkuId);
+            existingProduct.getProductSkus().remove(existingProductSku);
         }
 
         ProductSku productSku = productSkuMapper.toProductSku(productSkuRequest);
@@ -99,7 +101,7 @@ public class ProductSkuService implements IProductSkuService {
             Long productId,
             Long productSkuId,
             ProductSkuRequest productSkuRequest
-    ) {
+    ) throws IOException {
         ProductSku existingProductSku = productSkuRepository.findById(productSkuId)
                 .orElseThrow(() -> new ResourceNotFoundException("This variant doesn't exist"));
 
@@ -124,6 +126,11 @@ public class ProductSkuService implements IProductSkuService {
 
         existingProductSku.setQuantity(productSkuRequest.getQuantity());
         existingProductSku.setOutOfStock(productSkuRequest.getQuantity() == 0);
+
+        List<Image> productSkuImages = existingProductSku.getImages();
+        for(Image image : productSkuImages) {
+            fileService.deleteFile(image.getUrl(), imageUploadPath);
+        }
 
         existingProductSku.getImages().clear();
         existingProductSku.getImages().addAll(images);

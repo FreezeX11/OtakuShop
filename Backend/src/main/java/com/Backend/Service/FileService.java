@@ -30,4 +30,11 @@ public class FileService implements IFileService {
 
         return fileName;
     }
+
+    @Override
+    public void deleteFile(String fileName, String path) throws IOException {
+        Path uploadPath = Paths.get(path);
+        Path fullPath = uploadPath.resolve(fileName);
+        Files.deleteIfExists(fullPath);
+    }
 }

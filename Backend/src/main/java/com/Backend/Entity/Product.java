@@ -39,7 +39,8 @@ public class Product {
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "product",
-            cascade = { CascadeType.PERSIST, CascadeType.MERGE }
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            orphanRemoval = true
     )
     private List<ProductSku> productSkus = new ArrayList<>();
 

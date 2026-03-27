@@ -7,11 +7,12 @@ import com.Backend.Payload.Request.SignupRequest;
 import com.Backend.Payload.Response.UserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@Component
 @AllArgsConstructor
 public class UserMapper {
     private final PasswordEncoder passwordEncoder;

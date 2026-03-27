@@ -10,6 +10,8 @@ import lombok.Setter;
 public class VariationValueResponse {
     private Long id;
 
+    private String variationName;
+
     private String name;
 
     private boolean enable;

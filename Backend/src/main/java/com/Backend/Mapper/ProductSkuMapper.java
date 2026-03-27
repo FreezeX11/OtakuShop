@@ -4,11 +4,12 @@ import com.Backend.Entity.ProductSku;
 import com.Backend.Payload.Request.ProductSkuRequest;
 import com.Backend.Payload.Response.ProductSkuResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@Component
 @AllArgsConstructor
 public class ProductSkuMapper {
     private final VariationValueMapper variationValueMapper;

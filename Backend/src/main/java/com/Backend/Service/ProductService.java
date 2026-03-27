@@ -35,13 +35,21 @@ public class ProductService implements IProductService {
     private final ProductMapper productMapper;
     private final FileService fileService;
     private final ProductSkuService productSkuService;
+    private final CartService cartService;
     @Value("${upload.path}")
     private String imageUploadPath;
 
     @Override
     public void addProduct(ProductRequest productRequest) throws IOException {
+        boolean isEmpty = productRequest.getProductSkuRequests().stream()
+                .anyMatch(productSkuRequest -> productSkuRequest.getVariationValuesIds().isEmpty());
+
         if (productRepository.findByNameIgnoreCase(productRequest.getName().trim()).isPresent())
             throw new ResourceAlreadyExistException("This product already exist");
+
+        if(productRequest.getProductSkuRequests().size() > 1 && isEmpty) {
+            throw new BusinessException("One or many Skus haven't variations");
+        }
 
         SubCategory subCategory = subCategoryRepository.findById(productRequest.getSubCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("This subcategory doesn't exist"));
@@ -102,6 +110,7 @@ public class ProductService implements IProductService {
         existingProduct.setTags(tags);
 
         productRepository.save(existingProduct);
+        cartService.updateProductInCart(existingProduct.getId());
     }
 
     @Override

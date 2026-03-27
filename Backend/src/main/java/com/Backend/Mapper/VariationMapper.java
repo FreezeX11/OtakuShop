@@ -4,11 +4,12 @@ import com.Backend.Entity.Variation;
 import com.Backend.Payload.Request.VariationRequest;
 import com.Backend.Payload.Response.VariationResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@Component
 @AllArgsConstructor
 public class VariationMapper {
     private final VariationValueMapper variationValueMapper;

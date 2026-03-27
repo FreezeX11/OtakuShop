@@ -4,11 +4,12 @@ import com.Backend.Entity.Product;
 import com.Backend.Payload.Request.ProductRequest;
 import com.Backend.Payload.Response.ProductResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@Component
 @AllArgsConstructor
 public class ProductMapper {
     private final SubCategoryMapper subCategoryMapper;

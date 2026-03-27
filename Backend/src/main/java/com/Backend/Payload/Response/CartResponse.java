@@ -10,12 +10,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CartItemResponse {
+public class CartResponse {
     private Long id;
 
-    private int quantity;
+    private List<CartItemResponse> cartItemResponses;
 
-    private ProductResponse productResponse;
-
-    private ProductSkuResponse productSkuResponse;
+    private BigDecimal totalPrice;
 }

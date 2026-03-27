@@ -2,9 +2,10 @@ package com.Backend.Mapper;
 
 import com.Backend.Entity.Image;
 import com.Backend.Payload.Response.ImageResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class ImageMapper {
 
     public ImageResponse toImageResponse(Image image) {

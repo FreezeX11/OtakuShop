@@ -32,6 +32,7 @@ public class Cart {
     @OneToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true,
             mappedBy = "cart"
     )
     private List<CartItem> cartItems = new ArrayList<>();

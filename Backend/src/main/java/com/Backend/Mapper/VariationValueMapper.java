@@ -3,11 +3,12 @@ package com.Backend.Mapper;
 import com.Backend.Entity.VariationValue;
 import com.Backend.Payload.Request.VariationValueRequest;
 import com.Backend.Payload.Response.VariationValueResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Service
+@Component
 public class VariationValueMapper {
 
     public VariationValue toVariationValue(VariationValueRequest variationValueRequest) {
@@ -22,6 +23,7 @@ public class VariationValueMapper {
         VariationValueResponse variationValueResponse = new VariationValueResponse();
 
         variationValueResponse.setId(variationValue.getId());
+        variationValueResponse.setVariationName(variationValue.getVariation().getName());
         variationValueResponse.setName(variationValue.getName());
         variationValueResponse.setEnable(variationValue.isEnable());
 
