@@ -29,6 +29,7 @@ public class CartItemMapper {
         CartItemResponse cartItemResponse = new CartItemResponse();
 
         cartItemResponse.setId(cartItem.getId());
+        cartItemResponse.setQuantity(cartItem.getQuantity());
         cartItemResponse.setProductResponse(productMapper.toProductResponse(cartItem.getProductSku().getProduct()));
         cartItemResponse.setProductSkuResponse(productSkuMapper.toProductSkuResponse(cartItem.getProductSku()));
         cartItemResponse.setQuantity(cartItem.getQuantity());

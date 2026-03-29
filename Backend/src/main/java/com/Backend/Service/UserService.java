@@ -4,11 +4,13 @@ import com.Backend.Entity.Profile;
 import com.Backend.Entity.User;
 import com.Backend.Enumeration.UserProfile;
 import com.Backend.Enumeration.UserStatus;
+import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.UserMapper;
 import com.Backend.Payload.Request.SignupRequest;
 import com.Backend.Repository.ProfileRepository;
 import com.Backend.Repository.UserRepository;
 import com.Backend.ServiceInterface.IUserService;
+import com.Backend.Util.UserUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final UserMapper userMapper;
-    private final CartService cartService;
+    private final UserUtil userUtil;
 
     @Override
     public void registerUser(SignupRequest signupRequest) {
@@ -33,11 +35,11 @@ public class UserService implements IUserService {
                 UserProfile.valueOf(signupRequest.getProfile())
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(signupRequest.getProfile() + " not found")
+                        new ResourceNotFoundException(signupRequest.getProfile() + " not found")
                 );
 
         User user = userRepository.save(userMapper.toUser(signupRequest, profile));
-        cartService.createCart(user);
+        userUtil.createCartIfEligible(user);
     }
 
     @Override

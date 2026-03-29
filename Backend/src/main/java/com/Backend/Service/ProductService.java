@@ -153,4 +153,18 @@ public class ProductService implements IProductService {
                 .map(productMapper::toProductResponse)
                 .toList();
     }
+
+    @Override
+    public List<ProductResponse> getActiveProducts(boolean enable) {
+        return productRepository.findByEnable(enable).stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+    }
+
+    @Override
+    public List<ProductResponse> getProductsBySubCategory(boolean enable, Long subCategoryId) {
+        return productRepository.findByEnableAndSubCategoryId(enable, subCategoryId).stream()
+                .map(productMapper::toProductResponse)
+                .toList();
+    }
 }

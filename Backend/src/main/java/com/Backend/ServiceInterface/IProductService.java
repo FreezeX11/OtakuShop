@@ -14,4 +14,6 @@ public interface IProductService {
     void disableProduct(Long id);
     ProductResponse getProduct(Long id);
     List<ProductResponse> getProducts();
+    List<ProductResponse> getActiveProducts(boolean enable);
+    List<ProductResponse> getProductsBySubCategory(boolean enable, Long subCategoryId);
 }

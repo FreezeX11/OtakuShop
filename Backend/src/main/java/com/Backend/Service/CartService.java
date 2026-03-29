@@ -86,6 +86,7 @@ public class CartService implements ICartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void updateProductQuantityInCart(Long productSkuId, int quantity) {
         ProductSku existingProductSku = productSkuRepository.findById(productSkuId)
@@ -99,7 +100,7 @@ public class CartService implements ICartService {
 
         int newQuantity = existingCartItem.getQuantity() + quantity;
 
-        if(quantity <= 0) {
+        if(newQuantity < 0) {
             throw new IllegalArgumentException("Quantity should be greater than 0");
         }
 
@@ -112,13 +113,16 @@ public class CartService implements ICartService {
                     + " less than or equal to the quantity " + existingProductSku.getQuantity());
         }
 
-        existingCartItem.setQuantity(newQuantity);
-        cart.setTotalPrice(
-                price.multiply(BigDecimal.valueOf(quantity))
-                        .add(cart.getTotalPrice())
-        );
-
-        cartRepository.save(cart);
+        if(newQuantity == 0) {
+            deleteProductInCart(productSkuId);
+        } else {
+            existingCartItem.setQuantity(newQuantity);
+            cart.setTotalPrice(
+                    price.multiply(BigDecimal.valueOf(quantity))
+                            .add(cart.getTotalPrice())
+            );
+            cartRepository.save(cart);
+        }
     }
 
     @Override
@@ -130,9 +134,10 @@ public class CartService implements ICartService {
 
         cart.getCartItems().remove(existingCartItem);
         cart.setTotalPrice(
-                existingCartItem.getPrice()
-                        .multiply(BigDecimal.valueOf(existingCartItem.getQuantity()))
-                        .min(cart.getTotalPrice())
+                cart.getTotalPrice().subtract(
+                        existingCartItem.getPrice()
+                                .multiply(BigDecimal.valueOf(existingCartItem.getQuantity()))
+                )
         );
 
         cartRepository.save(cart);

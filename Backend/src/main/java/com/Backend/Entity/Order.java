@@ -26,6 +26,10 @@ public class Order {
 
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
