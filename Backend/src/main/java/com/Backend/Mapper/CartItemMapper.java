@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CartItemMapper {
     private final ProductMapper productMapper;
-    private final VariationValueMapper variationValueMapper;
     private final ProductSkuMapper productSkuMapper;
 
     public CartItem toCartItem(CartItemRequest cartItemRequest) {
@@ -32,7 +31,6 @@ public class CartItemMapper {
         cartItemResponse.setQuantity(cartItem.getQuantity());
         cartItemResponse.setProductResponse(productMapper.toProductResponse(cartItem.getProductSku().getProduct()));
         cartItemResponse.setProductSkuResponse(productSkuMapper.toProductSkuResponse(cartItem.getProductSku()));
-        cartItemResponse.setQuantity(cartItem.getQuantity());
 
         return cartItemResponse;
     }

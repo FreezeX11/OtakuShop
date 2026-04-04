@@ -24,19 +24,30 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String email;
+
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "order",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true
+    )
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "order",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     private List<Payment> payments = new ArrayList<>();
 
     @CreatedDate

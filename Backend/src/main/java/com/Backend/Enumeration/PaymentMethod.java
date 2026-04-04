@@ -1,6 +1,6 @@
 package com.Backend.Enumeration;
 
 public enum PaymentMethod {
-    ORANGE_MONEY,
+    STRIPE,
     CASH_ON_DELIVRY
 }
