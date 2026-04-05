@@ -4,6 +4,8 @@ import com.Backend.Entity.Image;
 import com.Backend.Entity.Product;
 import com.Backend.Entity.ProductSku;
 import com.Backend.Entity.VariationValue;
+import com.Backend.Exception.BusinessException;
+import com.Backend.Exception.FileUploadException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.ProductSkuMapper;
 import com.Backend.Payload.Request.ProductSkuRequest;
@@ -48,7 +50,7 @@ public class ProductSkuService implements IProductSkuService {
                         image.setCreatedDate(LocalDateTime.now());
                         productSku.getImages().add(image);
                     } catch (IOException e) {
-                        throw new RuntimeException("Error uploading product image", e);
+                        throw new FileUploadException("Error uploading product image", e);
                     }
                 });
 
@@ -85,7 +87,7 @@ public class ProductSkuService implements IProductSkuService {
                         image.setCreatedDate(LocalDateTime.now());
                         productSku.getImages().add(image);
                     } catch (IOException e) {
-                        throw new RuntimeException("Error uploading product image", e);
+                        throw new FileUploadException("Error uploading product image", e);
                     }
                 });
 
@@ -120,7 +122,7 @@ public class ProductSkuService implements IProductSkuService {
                         image.setCreatedDate(LocalDateTime.now());
                         images.add(image);
                     } catch (IOException e) {
-                        throw new RuntimeException("Error uploading product image", e);
+                        throw new FileUploadException("Error uploading product image", e);
                     }
                 });
 
@@ -157,7 +159,7 @@ public class ProductSkuService implements IProductSkuService {
                 .orElseThrow(() -> new ResourceNotFoundException("This variant doesn't exist"));
 
         if(!existingProductSku.getProduct().getId().equals(productId)){
-            throw new IllegalArgumentException("SKU does not belong to this product");
+            throw new BusinessException("SKU does not belong to this product");
         }
 
         existingProductSku.setEnable(false);
