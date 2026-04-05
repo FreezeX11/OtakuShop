@@ -29,6 +29,15 @@ public class OrderController {
         );
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateOrderStatus(
+            @PathVariable Long id,
+            @RequestParam String status
+    ) {
+        orderService.updateOrderStatus(id, status);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse> getOrders() {
         ApiResponse apiResponse = new ApiResponse(

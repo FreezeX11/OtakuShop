@@ -4,6 +4,7 @@ import com.Backend.Entity.Profile;
 import com.Backend.Entity.User;
 import com.Backend.Enumeration.UserProfile;
 import com.Backend.Enumeration.UserStatus;
+import com.Backend.Exception.ResourceAlreadyExistException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.UserMapper;
 import com.Backend.Payload.Request.SignupRequest;
@@ -28,7 +29,7 @@ public class UserService implements IUserService {
     public void registerUser(SignupRequest signupRequest) {
         userRepository.findByEmail(signupRequest.getEmail())
                 .ifPresent(user -> {
-            throw new RuntimeException("Email already exist!");
+            throw new ResourceAlreadyExistException("Email already exist!");
         });
 
         Profile profile = profileRepository.findByUserProfile(
@@ -45,7 +46,7 @@ public class UserService implements IUserService {
     @Override
     public void updateUser(Long id, SignupRequest signupRequest) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id: " + id +"not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id +"not found"));
 
         existingUser.setEmail(signupRequest.getEmail());
         existingUser.setLastModifiedDate(LocalDateTime.now());
@@ -54,7 +55,7 @@ public class UserService implements IUserService {
                         UserProfile.valueOf(signupRequest.getProfile())
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(signupRequest.getProfile() + "not found")
+                        new ResourceNotFoundException(signupRequest.getProfile() + "not found")
                 );
 
         existingUser.setUserProfile(profile);
@@ -65,7 +66,7 @@ public class UserService implements IUserService {
     @Override
     public void activateUser(Long id) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("This user doesn't exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("This user doesn't exist"));
 
         existingUser.setUserStatus(UserStatus.ACTIVE);
         userRepository.save(existingUser);
@@ -74,7 +75,7 @@ public class UserService implements IUserService {
     @Override
     public void deactivateUser(Long id) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("This user doesn't exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("This user doesn't exist"));
 
         existingUser.setUserStatus(UserStatus.INACTIVE);
         userRepository.save(existingUser);

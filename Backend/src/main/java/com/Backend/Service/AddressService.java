@@ -41,6 +41,7 @@ public class AddressService implements IAddressService {
 
         Address address = addressMapper.toAddress(addressRequest);
         address.setUser(user);
+        addressRepository.save(address);
     }
 
     @Override
@@ -64,6 +65,8 @@ public class AddressService implements IAddressService {
 
     @Override
     public List<AddressResponse> getAddressesByUser() {
+        System.out.println(authUtil.loggedInUser().getId());
+        System.out.println(addressRepository.findByUserId(authUtil.loggedInUser().getId()));
         return addressRepository.findByUserId(authUtil.loggedInUser().getId()).stream()
                 .map(addressMapper::toAddressResponse)
                 .toList();

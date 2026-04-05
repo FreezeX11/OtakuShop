@@ -40,6 +40,7 @@ public class OrderService implements IOrderService {
         User user = authUtil.loggedInUser();
         Cart cart = user.getCart();
         List<CartItem> cartItems = cart.getCartItems();
+        List<CartItem> cartItemsCopy = new ArrayList<>(cartItems);
 
         if(cartItems.isEmpty()) {
             throw new BusinessException("Cart is empty");
@@ -63,7 +64,7 @@ public class OrderService implements IOrderService {
         payment.setCreatedDate(LocalDateTime.now());
         order.getPayments().add(payment);
 
-        cartItems.forEach(cartItem -> {
+        cartItemsCopy.forEach(cartItem -> {
                     OrderItem orderItem = new OrderItem();
                     ProductSku existingProductSku = cartItem.getProductSku();
 
@@ -88,5 +89,14 @@ public class OrderService implements IOrderService {
         return orderRepository.findByEmail(user.getEmail()).stream()
                 .map(orderMapper::toOrderResponse)
                 .toList();
+    }
+
+    @Override
+    public void updateOrderStatus(Long id, String status) {
+        Order existingOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This order doesn't exist"));
+
+        existingOrder.setOrderStatus(OrderStatus.valueOf(status));
+        orderRepository.save(existingOrder);
     }
 }

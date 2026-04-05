@@ -8,4 +8,5 @@ import java.util.List;
 public interface IOrderService {
     OrderResponse placeOrder(Long addressId, String paymentMethod);
     List<OrderResponse> getOrders();
+    void updateOrderStatus(Long id, String status);
 }
