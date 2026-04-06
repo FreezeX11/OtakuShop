@@ -4,13 +4,13 @@ import com.Backend.Payload.Response.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -73,6 +73,30 @@ public class GlobalExceptionHandler {
                 "Validation Error",
                 400,
                 message,
+                req.getRequestURI(),
+                Instant.now()
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleBadCredentials(BadCredentialsException ex, HttpServletRequest req) {
+        return new ApiError(
+                "Invalid Credentials",
+                401,
+                ex.getMessage(),
+                req.getRequestURI(),
+                Instant.now()
+        );
+    }
+
+    @ExceptionHandler(DisabledAccountException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleBadDisableAccount(DisabledAccountException ex, HttpServletRequest req) {
+        return new ApiError(
+                "Unauthorized",
+                401,
+                ex.getMessage(),
                 req.getRequestURI(),
                 Instant.now()
         );
