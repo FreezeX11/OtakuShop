@@ -17,13 +17,17 @@ import java.time.LocalDateTime;
 public class UserMapper {
     private final PasswordEncoder passwordEncoder;
 
-    public User toUser(SignupRequest signupRequest, Profile profile) {
+    public User toUser(
+            String email,
+            String password,
+            Profile profile
+    ) {
         User user = new User();
 
-        user.setEmail(signupRequest.getEmail());
+        user.setEmail(email);
         user.setUserProfile(profile);
         user.setCreatedDate(LocalDateTime.now());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(password));
 
         return user;
     }

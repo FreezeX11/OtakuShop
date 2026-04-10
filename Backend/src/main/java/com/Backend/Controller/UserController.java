@@ -1,15 +1,13 @@
 package com.Backend.Controller;
 
 import com.Backend.Payload.Request.SignupRequest;
+import com.Backend.Payload.Request.UserRequest;
 import com.Backend.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -22,5 +20,16 @@ public class UserController {
         userService.registerUser(signupRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<Void> createUser(@Valid @RequestBody UserRequest userRequest) {
+        userService.createUser(userRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody )
 
 }
