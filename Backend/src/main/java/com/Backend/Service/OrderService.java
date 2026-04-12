@@ -8,11 +8,12 @@ import com.Backend.Exception.BusinessException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.OrderMapper;
 import com.Backend.Payload.Response.OrderResponse;
+import com.Backend.Payload.Response.StripeResponse;
 import com.Backend.Repository.AddressRepository;
 import com.Backend.Repository.OrderRepository;
-import com.Backend.Repository.ProductSkuRepository;
 import com.Backend.ServiceInterface.IOrderService;
 import com.Backend.Util.AuthUtil;
+import com.Backend.Util.OrderUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
-    private final ProductSkuRepository productSkuRepository;
-    private final CartService cartService;
+    private final OrderUtil orderUtil;
     private final AuthUtil authUtil;
+    private final StripeService stripeService;
     private final OrderMapper orderMapper;
 
     @Transactional
@@ -54,7 +56,7 @@ public class OrderService implements IOrderService {
         order.setAddress(existingAddress);
         order.setTotalPrice(cart.getTotalPrice());
         order.setCreatedDate(LocalDateTime.now());
-        order.setOrderStatus(OrderStatus.CREATED);
+        order.setOrderStatus(OrderStatus.PENDING);
 
         //created new payment
         payment.setAmount(order.getTotalPrice());
@@ -66,20 +68,37 @@ public class OrderService implements IOrderService {
 
         cartItemsCopy.forEach(cartItem -> {
                     OrderItem orderItem = new OrderItem();
-                    ProductSku existingProductSku = cartItem.getProductSku();
 
                     orderItem.setQuantity(cartItem.getQuantity());
                     orderItem.setProductSku(cartItem.getProductSku());
                     orderItem.setOrder(order);
                     orderItem.setCreatedDate(LocalDateTime.now());
                     order.getOrderItems().add(orderItem);
-
-                    existingProductSku.setQuantity(existingProductSku.getQuantity() - cartItem.getQuantity());
-                    cartService.deleteProductInCart(existingProductSku.getId());
-                    productSkuRepository.save(existingProductSku);
                 });
+
+        if(paymentMethod.equalsIgnoreCase(PaymentMethod.CASH_ON_DELIVRY.toString())) {
+            orderUtil.updateStockAndCart(cartItemsCopy);
+        }
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toOrderResponse(savedOrder);
+    }
+
+    @Override
+    public StripeResponse checkout(Long id) {
+        Order existingOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This order doesn't exist"));
+
+        User user = authUtil.loggedInUser();
+
+        if (!(Objects.equals(user.getId(), existingOrder.getAddress().getUser().getId()))) {
+            throw new BusinessException("This order doesn't belong to this user");
+        }
+
+        if (!existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
+            throw new BusinessException("Order already processed or invalid");
+        }
+
+        return stripeService.createCheckoutSession(existingOrder);
     }
 
     @Override

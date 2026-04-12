@@ -8,6 +8,6 @@ public interface IUserService {
     void registerUser(SignupRequest signupRequest);
     void createUser(UserRequest userRequest);
     void updateUser(Long id, UserRequest userRequest);
-    void activateUser(Long id);
-    void deactivateUser(Long id);
+    void enableUser(Long id);
+    void disableUser(Long id);
 }

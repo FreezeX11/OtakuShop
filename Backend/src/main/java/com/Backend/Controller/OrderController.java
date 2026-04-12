@@ -29,6 +29,19 @@ public class OrderController {
         );
     }
 
+    @PostMapping("/{id}/checkout")
+    public ResponseEntity<ApiResponse> checkout(@PathVariable Long id) {
+        ApiResponse apiResponse = new ApiResponse(
+                HttpStatus.OK.value(),
+                orderService.checkout(id)
+        );
+
+        return new ResponseEntity<>(
+                apiResponse,
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateOrderStatus(
             @PathVariable Long id,
@@ -50,5 +63,4 @@ public class OrderController {
                 HttpStatus.OK
         );
     }
-
 }

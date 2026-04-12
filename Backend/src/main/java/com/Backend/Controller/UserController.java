@@ -30,6 +30,22 @@ public class UserController {
     @PutMapping
     public ResponseEntity<Void> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody )
+            @Valid @RequestBody UserRequest userRequest
+    ) {
+        userService.updateUser(id, userRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<Void> disableUser(@PathVariable Long id) {
+        userService.disableUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/enable")
+    public ResponseEntity<Void> enableUser(@PathVariable Long id) {
+        userService.enableUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

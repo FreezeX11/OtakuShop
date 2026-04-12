@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -36,6 +38,9 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Cart cart;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Address> addresses = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
