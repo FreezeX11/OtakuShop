@@ -1,7 +1,7 @@
 package com.Backend.Enumeration;
 
 public enum OrderStatus {
-    CREATED,
+    PENDING,
     CONFIRMED,
     CANCELED
 }

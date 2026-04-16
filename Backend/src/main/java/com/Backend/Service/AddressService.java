@@ -2,7 +2,9 @@ package com.Backend.Service;
 
 import com.Backend.Entity.Address;
 import com.Backend.Entity.User;
+import com.Backend.Exception.BusinessException;
 import com.Backend.Exception.ResourceAlreadyExistException;
+import com.Backend.Exception.ResourceInUseException;
 import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.AddressMapper;
 import com.Backend.Payload.Request.AddressRequest;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -60,13 +63,21 @@ public class AddressService implements IAddressService {
         Address existingAddress = addressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This address doesn't exist"));
 
+        User user = authUtil.loggedInUser();
+
+        if(!Objects.equals(existingAddress.getUser().getId(), user.getId())) {
+            throw new BusinessException("This address doesn't belong to this user");
+        }
+
+        if(!existingAddress.getOrders().isEmpty()) {
+            throw new ResourceInUseException("This address is used by one or many Orders");
+        }
+
         addressRepository.delete(existingAddress);
     }
 
     @Override
     public List<AddressResponse> getAddressesByUser() {
-        System.out.println(authUtil.loggedInUser().getId());
-        System.out.println(addressRepository.findByUserId(authUtil.loggedInUser().getId()));
         return addressRepository.findByUserId(authUtil.loggedInUser().getId()).stream()
                 .map(addressMapper::toAddressResponse)
                 .toList();

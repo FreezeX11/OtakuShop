@@ -83,7 +83,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void activateUser(Long id) {
+    public void enableUser(Long id) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This user doesn't exist"));
 
@@ -92,7 +92,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void deactivateUser(Long id) {
+    public void disableUser(Long id) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This user doesn't exist"));
 

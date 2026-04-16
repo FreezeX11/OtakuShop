@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +28,9 @@ public class Address {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
