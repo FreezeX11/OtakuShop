@@ -47,6 +47,7 @@ public class CartService implements ICartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void addProductInCart(CartItemRequest cartItemRequest) {
         ProductSku existingProductSku = productSkuRepository.findById(cartItemRequest.getProductSkuId())
