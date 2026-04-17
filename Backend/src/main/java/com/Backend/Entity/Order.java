@@ -43,12 +43,11 @@ public class Order {
     )
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
+    @OneToOne(
             mappedBy = "order",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
     )
-    private List<Payment> payments = new ArrayList<>();
+    private Payment payment;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

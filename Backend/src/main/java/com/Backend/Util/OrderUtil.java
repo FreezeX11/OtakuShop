@@ -26,4 +26,14 @@ public class OrderUtil {
             productSkuRepository.save(existingProductSku);
         });
     }
+
+    public void updateStock(List<OrderItem> orderItems) {
+        orderItems.forEach(orderItem -> {
+            ProductSku existingProductSku = orderItem.getProductSku();
+
+            existingProductSku.setQuantity(existingProductSku.getQuantity() - orderItem.getQuantity());
+            cartService.deleteProductInCart(existingProductSku.getId());
+            productSkuRepository.save(existingProductSku);
+        });
+    }
 }

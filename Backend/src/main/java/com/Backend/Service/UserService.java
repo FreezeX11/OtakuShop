@@ -9,6 +9,7 @@ import com.Backend.Exception.ResourceNotFoundException;
 import com.Backend.Mapper.UserMapper;
 import com.Backend.Payload.Request.SignupRequest;
 import com.Backend.Payload.Request.UserRequest;
+import com.Backend.Payload.Response.UserResponse;
 import com.Backend.Repository.ProfileRepository;
 import com.Backend.Repository.UserRepository;
 import com.Backend.ServiceInterface.IUserService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -98,5 +100,12 @@ public class UserService implements IUserService {
 
         existingUser.setUserStatus(UserStatus.INACTIVE);
         userRepository.save(existingUser);
+    }
+
+    @Override
+    public List<UserResponse> getUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserResponse)
+                .toList();
     }
 }

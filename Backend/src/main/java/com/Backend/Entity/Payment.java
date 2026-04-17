@@ -31,7 +31,7 @@ public class Payment {
 
     private BigDecimal amount;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 

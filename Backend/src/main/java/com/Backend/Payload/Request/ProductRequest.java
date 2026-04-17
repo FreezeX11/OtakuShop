@@ -34,9 +34,7 @@ public class ProductRequest {
     private Long subCategoryId;
 
     @NotEmpty(message = "ProductSku list can't be empty")
-    @Size(min = 1, message = "ProductSkuRequest should have at least 1 element")
     private List<ProductSkuRequest> productSkuRequests = new ArrayList<>();
 
-    @NotNull(message = "Tag list can't be null")
     private List<Long> tagsIds = new ArrayList<>();
 }

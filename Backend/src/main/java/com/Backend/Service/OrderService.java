@@ -64,7 +64,7 @@ public class OrderService implements IOrderService {
         payment.setPaymentStatus(PaymentStatus.PENDING);
         payment.setOrder(order);
         payment.setCreatedDate(LocalDateTime.now());
-        order.getPayments().add(payment);
+        order.setPayment(payment);
 
         cartItemsCopy.forEach(cartItem -> {
                     OrderItem orderItem = new OrderItem();
@@ -79,6 +79,7 @@ public class OrderService implements IOrderService {
         if(paymentMethod.equalsIgnoreCase(PaymentMethod.CASH_ON_DELIVRY.toString())) {
             orderUtil.updateStockAndCart(cartItemsCopy);
         }
+
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toOrderResponse(savedOrder);
     }
@@ -95,7 +96,7 @@ public class OrderService implements IOrderService {
         }
 
         if (!existingOrder.getOrderStatus().equals(OrderStatus.PENDING)) {
-            throw new BusinessException("Order already processed or invalid");
+            throw new BusinessException("Order's already processed or invalid");
         }
 
         return stripeService.createCheckoutSession(existingOrder);
