@@ -18,6 +18,7 @@ import com.Backend.ServiceInterface.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class ProductService implements IProductService {
     @Value("${upload.path}")
     private String imageUploadPath;
 
+    @Transactional
     @Override
     public void addProduct(ProductRequest productRequest) throws IOException {
         boolean isEmpty = productRequest.getProductSkuRequests().stream()
@@ -73,6 +75,7 @@ public class ProductService implements IProductService {
         productRepository.save(mappedProduct);
     }
 
+    @Transactional
     @Override
     public void updateProduct(Long id, ProductRequest productRequest) throws IOException {
         Product existingProduct = productRepository.findById(id)
