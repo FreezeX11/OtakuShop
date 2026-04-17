@@ -3,6 +3,7 @@ package com.Backend;
 import com.Backend.Entity.Profile;
 import com.Backend.Enumeration.UserProfile;
 import com.Backend.Payload.Request.SignupRequest;
+import com.Backend.Payload.Request.UserRequest;
 import com.Backend.Repository.ProfileRepository;
 import com.Backend.Service.UserService;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,11 @@ public class BackendApplication implements CommandLineRunner {
 //			profileRepository.save(new Profile(userProfileEnum));
 //		}
 //
-//		SignupRequest signupRequest = new SignupRequest();
-//		signupRequest.setEmail("diam@gmail.com");
-//		signupRequest.setProfile("ADMIN");
-//		signupRequest.setPassword("strongPassword123");
+//		UserRequest userRequest = new UserRequest();
+//		userRequest.setEmail("diam@gmail.com");
+//		userRequest.setProfile("ADMIN");
+//		userRequest.setPassword("strongPassword123");
 //
-//		userService.registerUser(signupRequest);
+//		userService.createUser(userRequest);
 	}
 }
