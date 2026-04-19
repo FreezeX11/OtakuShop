@@ -47,8 +47,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/register").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/stripe/webhooks").permitAll()
-                        .requestMatchers("/success").permitAll()
-                        .requestMatchers("/cancel").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)

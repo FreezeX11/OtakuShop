@@ -19,6 +19,7 @@ import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StripeService {
@@ -95,48 +97,80 @@ public class StripeService {
         );
     }
 
+//    public void handleStripeEvent(HttpServletRequest request) throws Exception {
+//        String payload = request.getReader().lines().collect(Collectors.joining());
+//        String sigHeader = request.getHeader("Stripe-Signature");
+//
+//        Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+//
+//        PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
+//                .getObject().orElse(null);
+//
+//        if (intent == null)
+//            return;
+//
+//        String orderId = intent.getMetadata().get("orderId");
+//
+//        Order order = orderRepository.findById(Long.valueOf(orderId))
+//                .orElseThrow(() -> new ResourceNotFoundException("This order doesn't exist"));
+//
+//        Payment payment = order.getPayment();
+//
+//        if (payment.getPaymentStatus() == PaymentStatus.PAID)
+//            return;
+//
+//        if (!"payment_intent.succeeded".equals(event.getType()) &&
+//                !"payment_intent.payment_failed".equals(event.getType())) {
+//            return;
+//        }
+//
+//        if ("payment_intent.succeeded".equals(event.getType())) {
+//
+//            order.setOrderStatus(OrderStatus.CONFIRMED);
+//
+//            payment.setPaymentStatus(PaymentStatus.PAID);
+//
+//            orderUtil.updateStock(order.getOrderItems());
+//
+//        } else if ("payment_intent.payment_failed".equals(event.getType())) {
+//
+//            payment.setPaymentStatus(PaymentStatus.FAILED);
+//
+//        }
+//
+//        orderRepository.save(order);
+//    }
+
     public void handleStripeEvent(HttpServletRequest request) throws Exception {
         String payload = request.getReader().lines().collect(Collectors.joining());
         String sigHeader = request.getHeader("Stripe-Signature");
 
-        Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+        try {
+            Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
-        PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject().orElse(null);
+            log.info(event.getType());
+            if ("checkout.session.completed".equals(event.getType())) {
+                log.info("im in checkout");
 
-        if (intent == null)
-            return;
+                Session session = (Session) event.getDataObjectDeserializer()
+                        .getObject()
+                        .orElseThrow();
 
-        String orderId = intent.getMetadata().get("orderId");
+                String orderId = session.getMetadata().get("orderId");
 
-        Order order = orderRepository.findById(Long.valueOf(orderId))
-                .orElseThrow(() -> new ResourceNotFoundException("This order doesn't exist"));
+                log.info("orderId:{}", orderId);
 
-        Payment payment = order.getPayment();
+                Order order = orderRepository.findById(Long.valueOf(orderId))
+                        .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
-        if (payment.getPaymentStatus() == PaymentStatus.PAID)
-            return;
+                order.setOrderStatus(OrderStatus.CONFIRMED);
+                order.getPayment().setPaymentStatus(PaymentStatus.PAID);
+                orderUtil.updateStock(order.getOrderItems());
 
-        if (!"payment_intent.succeeded".equals(event.getType()) &&
-                !"payment_intent.payment_failed".equals(event.getType())) {
-            return;
+                orderRepository.save(order);
+            }
+        } catch (Exception e) {
+            log.info("signature error:{}", String.valueOf(e));
         }
-
-        if ("payment_intent.succeeded".equals(event.getType())) {
-
-            order.setOrderStatus(OrderStatus.CONFIRMED);
-
-            payment.setPaymentStatus(PaymentStatus.PAID);
-
-            orderUtil.updateStock(order.getOrderItems());
-
-        } else if ("payment_intent.payment_failed".equals(event.getType())) {
-
-            payment.setPaymentStatus(PaymentStatus.FAILED);
-
-        }
-
-        orderRepository.save(order);
     }
-
 }
