@@ -41,8 +41,6 @@ public class StripeService {
     private final OrderRepository orderRepository;
 
     private final OrderUtil orderUtil;
-    
-    private final AuthUtil authUtil;
 
     public StripeResponse createCheckoutSession(Order order) {
         Stripe.apiKey = secretKey;
@@ -76,8 +74,6 @@ public class StripeService {
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("http://localhost:8080/success")
-                        .setCancelUrl("http://localhost:8080/cancel")
                         .putMetadata("orderId", String.valueOf(order.getId()))
                         .addAllLineItem(lineItems)
                         .build();
@@ -86,6 +82,7 @@ public class StripeService {
         try {
              session = Session.create(params);
         } catch (StripeException e) {
+            log.info(e.getMessage());
             throw new com.Backend.Exception.StripeException("Something went wrong with session ", e);
         }
 
@@ -96,50 +93,6 @@ public class StripeService {
                 session.getUrl()
         );
     }
-
-//    public void handleStripeEvent(HttpServletRequest request) throws Exception {
-//        String payload = request.getReader().lines().collect(Collectors.joining());
-//        String sigHeader = request.getHeader("Stripe-Signature");
-//
-//        Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-//
-//        PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
-//                .getObject().orElse(null);
-//
-//        if (intent == null)
-//            return;
-//
-//        String orderId = intent.getMetadata().get("orderId");
-//
-//        Order order = orderRepository.findById(Long.valueOf(orderId))
-//                .orElseThrow(() -> new ResourceNotFoundException("This order doesn't exist"));
-//
-//        Payment payment = order.getPayment();
-//
-//        if (payment.getPaymentStatus() == PaymentStatus.PAID)
-//            return;
-//
-//        if (!"payment_intent.succeeded".equals(event.getType()) &&
-//                !"payment_intent.payment_failed".equals(event.getType())) {
-//            return;
-//        }
-//
-//        if ("payment_intent.succeeded".equals(event.getType())) {
-//
-//            order.setOrderStatus(OrderStatus.CONFIRMED);
-//
-//            payment.setPaymentStatus(PaymentStatus.PAID);
-//
-//            orderUtil.updateStock(order.getOrderItems());
-//
-//        } else if ("payment_intent.payment_failed".equals(event.getType())) {
-//
-//            payment.setPaymentStatus(PaymentStatus.FAILED);
-//
-//        }
-//
-//        orderRepository.save(order);
-//    }
 
     public void handleStripeEvent(HttpServletRequest request) throws Exception {
         String payload = request.getReader().lines().collect(Collectors.joining());
@@ -169,8 +122,8 @@ public class StripeService {
 
                 orderRepository.save(order);
             }
-        } catch (Exception e) {
-            log.info("signature error:{}", String.valueOf(e));
+        } catch (StripeException e) {
+            throw new com.Backend.Exception.StripeException("stripe error", e);
         }
     }
 }
